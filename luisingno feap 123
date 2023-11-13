@@ -1,0 +1,94 @@
+;Programa em Assembly
+;Faculdade de Engenharia e Administração Paulista
+;Autores: lucas vaz
+;Curso: Engenharia de Computação
+
+SYS_EXIT      equ 1
+SYS_READ      equ 3
+SYS_WRITE     equ 4
+STDIN         equ 0
+STDOUT        equ 1
+
+section .data
+    msg1 db 'Insira o primeiro digito: ', 0
+    len1 equ $ - msg1
+
+    msg2 db 'Insira o segundo digito: ', 0
+    len2 equ $ - msg2
+
+    msg3 db 'A media é: ', 0
+    len3 equ $ - msg3
+
+section .bss
+    num1 resb 2
+    num2 resb 2
+    res resb 2
+
+section .text
+    global _start
+
+_start:
+    ; Imprime a mensagem msg1
+    mov eax, SYS_WRITE
+    mov ebx, STDOUT
+    mov ecx, msg1
+    mov edx, len1
+    int 0x80
+
+    ; Lê o primeiro número
+    mov eax, SYS_READ
+    mov ebx, STDIN
+    mov ecx, num1
+    mov edx, 2
+    int 0x80
+
+    ; Imprime a mensagem msg2
+    mov eax, SYS_WRITE
+    mov ebx, STDOUT
+    mov ecx, msg2
+    mov edx, len2
+    int 0x80
+
+    ; Lê o segundo número
+    mov eax, SYS_READ
+    mov ebx, STDIN
+    mov ecx, num2
+    mov edx, 2
+    int 0x80
+
+    ; Move o primeiro número para eax e converte para decimal
+    mov eax, [num1]
+    sub al, '0'  ; Usar apenas 1 byte (ASCII do dígito)
+
+    ; Move o segundo número para ebx e converte para decimal
+    mov ebx, [num2]
+    sub bl, '0'  ; Usar apenas 1 byte (ASCII do dígito)
+
+    ; Calcula a média
+    add al, bl   ; Soma os dois números
+    shr al, 1    ; Divide a soma por 2 para calcular a média
+
+    ; Converte o resultado de volta para ASCII
+    add al, '0'
+
+    ; Armazena a média em res
+    mov [res], al
+
+    ; Imprime a mensagem msg3
+    mov eax, SYS_WRITE
+    mov ebx, STDOUT
+    mov ecx, msg3
+    mov edx, len3
+    int 0x80
+
+    ; Imprime a média
+    mov eax, SYS_WRITE
+    mov ebx, STDOUT
+    mov ecx, res
+    mov edx, 1
+    int 0x80
+
+    ; Encerra o programa
+    mov eax, SYS_EXIT
+    xor ebx, ebx
+    int 0x80
