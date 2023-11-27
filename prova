@@ -1,0 +1,76 @@
+;programa de comparação de dois informados, em assembly
+; Intruções cmp e jg para estudo e pesquisa
+; projeto - asembly 2o bimestre/27-nov-23
+; Author:Lucas vaz, FEAP Cmputação | Versão: 
+section .data
+    primeira_mensagem db "Digite o 1o número: ", 0
+    segunda_mensagem db "Digite o 2o número: ", 0
+    maior_mensagem db "O maior número é: ", 0
+
+section .bss
+    primeiro_numero resb 4
+    segundo_numero resb 4
+
+section .text
+    global _start
+
+_start:
+    ; Exibir a primeira mensagem
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, primeira_mensagem
+    mov edx, 21 ; Tamanho da primeira mensagem
+    int 0x80
+
+    ; Ler o primeiro número
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, primeiro_numero
+    mov edx, 4
+    int 0x80
+
+    ; Exibir a segunda mensagem
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, segunda_mensagem
+    mov edx, 20 ; Tamanho da segunda mensagem
+    int 0x80
+
+    ; Ler o segundo número
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, segundo_numero
+    mov edx, 4
+    int 0x80
+
+    ; Comparar os números e exibir o maior
+    mov eax, dword [primeiro_numero]  ; Carregar o primeiro número
+    mov ebx, dword [segundo_numero]   ; Carregar o segundo número
+    cmp eax, ebx
+    jle nao_trocar ; Se o primeiro número for menor ou igual, não trocar
+
+    ; Trocar os números se o segundo for maior
+    mov ecx, dword [segundo_numero]
+    mov dword [segundo_numero], eax
+    mov dword [primeiro_numero], ecx
+
+nao_trocar:
+    ; Exibir o maior número
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, maior_mensagem
+    mov edx, 18 ; Tamanho da mensagem do maior número
+    int 0x80
+
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, segundo_numero  ; Exibir o número que agora está armazenado no segundo_numero
+    mov edx, 4
+    int 0x80
+
+    ; Saída do programa
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80
+   
+ 
